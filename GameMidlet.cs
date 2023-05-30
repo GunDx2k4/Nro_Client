@@ -1,3 +1,4 @@
+using MyMod.Main;
 using UnityEngine;
 
 public class GameMidlet
@@ -25,6 +26,7 @@ public class GameMidlet
 	public GameMidlet()
 	{
 		initGame();
+		Mod.gI().init();
 	}
 
 	public void initGame()

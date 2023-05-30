@@ -1,5 +1,6 @@
 using System;
 using Assets.src.g;
+using MyMod.Main;
 
 public class GameScr : mScreen, IChatable
 {
@@ -2497,7 +2498,7 @@ public class GameScr : mScreen, IChatable
 
 	public override void updateKey()
 	{
-		if (Controller.isStopReadMessage || Char.myCharz().isTeleport || InfoDlg.isLock)
+		if (Controller.isStopReadMessage || Char.myCharz().isTeleport || InfoDlg.isLock || Mod.gI().updateKeyGameScr())
 		{
 			return;
 		}
@@ -4430,6 +4431,7 @@ public class GameScr : mScreen, IChatable
 
 	public override void update()
 	{
+		Mod.gI().updateGameScr();
 		if (GameCanvas.keyPressed[16])
 		{
 			GameCanvas.keyPressed[16] = false;
@@ -4771,7 +4773,7 @@ public class GameScr : mScreen, IChatable
 			return;
 		}
 		GameCanvas.debug("PA1", 1);
-		if (isFreez || (isUseFreez && ChatPopup.currChatPopup == null))
+        if (isFreez || (isUseFreez && ChatPopup.currChatPopup == null))
 		{
 			dem++;
 			if ((dem < 30 && dem >= 0 && GameCanvas.gameTick % 4 == 0) || (dem >= 30 && dem <= 50 && GameCanvas.gameTick % 3 == 0) || dem > 50)
@@ -4807,7 +4809,7 @@ public class GameScr : mScreen, IChatable
 		}
 		GameCanvas.debug("PA2", 1);
 		GameCanvas.paintBGGameScr(g);
-		if ((isRongThanXuatHien || isFireWorks) && TileMap.bgID != 3)
+        if ((isRongThanXuatHien || isFireWorks) && TileMap.bgID != 3)
 		{
 			paintBlackSky(g);
 		}
@@ -5086,8 +5088,9 @@ public class GameScr : mScreen, IChatable
 		resetTranslate(g);
 		paint_xp_bar(g);
 		if (!isPaintOther)
-		{
-			if (GameCanvas.open3Hour)
+        {
+            Mod.gI().paintGameScr(g);
+            if (GameCanvas.open3Hour)
 			{
 				if (GameCanvas.w > 250)
 				{
@@ -5282,7 +5285,7 @@ public class GameScr : mScreen, IChatable
 		}
 		paintPhuBanBar(g, num12 + GameCanvas.w / 2, 0, num13);
 		EffectManager.hiEffects.paintAll(g);
-	}
+    }
 
 	private void paintXoSo(mGraphics g)
 	{

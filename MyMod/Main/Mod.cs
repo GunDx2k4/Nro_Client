@@ -21,7 +21,7 @@ namespace MyMod.Main
 
         public void init()
         {
-            cmdTest ??= new CommandMod(string.Empty, this, 0, false, 50, 20);
+            cmdTest ??= new CommandMod(string.Empty, this, 0, false, 155, 5);
             cmdTest.setType(0);
         }
 
@@ -48,6 +48,10 @@ namespace MyMod.Main
 
         }
 
+        public void updateKeyMain()
+        {
+
+        }
 
         public bool updateKeyGameScr()
         {
@@ -58,10 +62,13 @@ namespace MyMod.Main
             }
             return false;
         }
+        public void paintMain(mGraphics g)
+        {
+
+        }
 
         public void paintGameScr(mGraphics g)
         {
-
             cmdTest.paint(g);
         }
     }

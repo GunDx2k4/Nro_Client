@@ -6,9 +6,15 @@
   </PropertyGroup>
   <PropertyGroup>
     <LangVersion>Preview</LangVersion>
-    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
   </PropertyGroup>
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>True</Optimize>
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>none</DebugType>
+  </PropertyGroup>
   <ItemGroup>
     <Folder Include="MyMod\" />
   </ItemGroup>
@@ -17,4 +23,7 @@
       <HintPath>..\Dragonboy_vn_v230\Dragonboy_vn_v230_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy $(TargetPath) D:\Code\NRO\Dragonboy_vn_v230\Dragonboy_vn_v230_Data\Managed" />
+  </Target>
 </Project>

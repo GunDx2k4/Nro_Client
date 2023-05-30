@@ -1,3 +1,4 @@
+using MyMod.Main;
 using System.Net.NetworkInformation;
 using System.Threading;
 using UnityEngine;
@@ -147,6 +148,7 @@ public class Main : MonoBehaviour
 			if (Event.current.type.Equals(EventType.Repaint) && paintCount <= updateCount)
 			{
 				GameMidlet.gameCanvas.paint(g);
+				Mod.gI().paintMain(g);
 				paintCount++;
 				g.reset();
 			}
@@ -283,6 +285,7 @@ public class Main : MonoBehaviour
 			DataInputStream.update();
 			SMS.update();
 			Net.update();
+			Mod.gI().updateMain();
 			f++;
 			if (f > 8)
 			{
@@ -340,6 +343,7 @@ public class Main : MonoBehaviour
 			if (num != 0)
 			{
 				GameMidlet.gameCanvas.keyPressedz(num);
+				Mod.gI().updateKeyMain();
 			}
 		}
 		if (Event.current.type == EventType.KeyUp)

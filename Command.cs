@@ -101,7 +101,7 @@ public class Command
 		}
 	}
 
-	public void performAction()
+	public virtual void performAction()
 	{
 		GameCanvas.clearAllPointerEvent();
 		if (isPlaySoundButton && ((caption != null && !caption.Equals(string.Empty) && !caption.Equals(mResources.saying)) || img != null))
@@ -128,7 +128,7 @@ public class Command
 		hw = 80;
 	}
 
-	public void paint(mGraphics g)
+	public virtual void paint(mGraphics g)
 	{
 		if (img != null)
 		{
