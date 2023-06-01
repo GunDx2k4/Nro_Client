@@ -10,29 +10,22 @@ namespace MyMod.Model
     public class CommandMod : Command
     {
         private IActionAuto actionAuto;
-        private bool isAuto;
 
-        public CommandMod(string caption, IActionAuto actionAuto, int idAction, bool isAuto)
+        public CommandMod(string caption, IActionAuto actionAuto, int idAction)
         {
             this.caption = caption;
             this.idAction = idAction;
-            this.actionAuto = actionAuto;
-            this.isAuto = isAuto;
+            this.actionAuto = (actionAuto ??= Mod.gI());
         }
-        public CommandMod(string caption, IActionAuto actionAuto, int idAction, bool isAuto, int x, int y)
+        public CommandMod(string caption, IActionAuto actionAuto, int idAction, int x, int y)
         {
             this.caption = caption;
             this.idAction = idAction;
-            this.actionAuto = actionAuto;
-            this.isAuto = isAuto;
+            this.actionAuto = (actionAuto ??= Mod.gI());
             this.x = x;
             this.y = y;
         }
 
-        public void setIsAuto()
-        {
-            isAuto = !isAuto;
-        }
 
         public void setType(int type)
         {
@@ -63,14 +56,7 @@ namespace MyMod.Model
 
         public override void performAction()
         {
-            if (actionAuto != null)
-            {
-                actionAuto.perform(idAction, isAuto);
-            }
-            else
-            {
-                Mod.gI().perform(idAction, isAuto);
-            }
+            actionAuto.perform(idAction);
         }
         public override void paint(mGraphics g)
         {
@@ -87,11 +73,11 @@ namespace MyMod.Model
             {
                 if (!isFocus)
                 {
-                    mFont.tahoma_7b_dark.drawString(g, isAuto ? "Bật" : "Tắt", num, y + 7, 2);
+                    mFont.tahoma_7b_dark.drawString(g, actionAuto.getIsAuto() ? "Bật" : "Tắt", num, y + 7, 2);
                 }
                 else
                 {
-                    mFont.tahoma_7b_green2.drawString(g, isAuto ? "Bật" : "Tắt", num, y + 7, 2);
+                    mFont.tahoma_7b_green2.drawString(g, actionAuto.getIsAuto() ? "Bật" : "Tắt", num, y + 7, 2);
                 }
                 return;
             }

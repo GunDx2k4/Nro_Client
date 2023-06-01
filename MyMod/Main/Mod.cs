@@ -14,6 +14,8 @@ namespace MyMod.Main
 
         private CommandMod cmdTest;
 
+        private bool isAuto;
+
         public static Mod gI()
         {
             return Instance ??= new Mod();
@@ -21,17 +23,26 @@ namespace MyMod.Main
 
         public void init()
         {
-            cmdTest ??= new CommandMod(string.Empty, this, 0, false, 155, 5);
+            cmdTest ??= new CommandMod(string.Empty, null, 0, 155, 5);
             cmdTest.setType(0);
         }
 
-        public void perform(int idAction, bool isAuto)
+        public void setIsAuto(bool isAuto)
+        {
+            this.isAuto = isAuto;
+        }
+
+        public bool getIsAuto()
+        {
+            return this.isAuto;
+        }
+        public void perform(int idAction)
         {
             switch (idAction)
             {
                 case 0:
                     {
-                        cmdTest.setIsAuto();
+                        setIsAuto(!isAuto);
                         GameCanvas.startOKDlg("Test");
                     }
                     break;
