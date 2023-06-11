@@ -1,5 +1,5 @@
 ﻿using MyMod.Interfaces;
-using MyMod.Main;
+using MyMod.MainMod;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +10,8 @@ namespace MyMod.Model
     public class CommandMod : Command
     {
         private IActionAuto actionAuto;
+
+        public int transform;
 
         public CommandMod(string caption, IActionAuto actionAuto, int idAction)
         {
@@ -56,10 +58,34 @@ namespace MyMod.Model
 
         public override void performAction()
         {
+            GameCanvas.clearAllPointerEvent();
             actionAuto.perform(idAction);
         }
         public override void paint(mGraphics g)
         {
+            if(img != null)
+            {
+                g.drawImage(img, x, y + mGraphics.addYWhenOpenKeyBoard, 0 , transform);
+                if (isFocus)
+                {
+                    if (imgFocus == null)
+                    {
+                        if (cmdClosePanel)
+                        {
+                            g.drawImage(ItemMap.imageFlare, x + 8, y + mGraphics.addYWhenOpenKeyBoard + 8, 3);
+                        }
+                        else
+                        {
+                            g.drawImage(ItemMap.imageFlare, x - (img.Equals(GameScr.imgMenu) ? 10 : 0), y + mGraphics.addYWhenOpenKeyBoard, 0);
+                        }
+                    }
+                    else
+                    {
+                        g.drawImage(imgFocus, x, y + mGraphics.addYWhenOpenKeyBoard, 0);
+                    }
+                }
+                return;
+            }
             if (!isFocus)
             {
                 paintOngMau(btn0left, btn0mid, btn0right, x, y, w, g);

@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using UnityEngine;
 
 public class MyStream
 {
@@ -7,8 +9,8 @@ public class MyStream
 		path = Main.res + path;
 		try
 		{
-			return DataInputStream.getResourceAsStream(path);
-		}
+            return DataInputStream.getResourceAsStream(path);
+        }
 		catch (Exception)
 		{
 			return null;

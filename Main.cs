@@ -1,7 +1,7 @@
-using MyMod.Main;
+using MyMod.MainMod;
 using System.Net.NetworkInformation;
 using System.Threading;
-using UnityEngine;
+using UnityEngine;	
 
 public class Main : MonoBehaviour
 {
@@ -148,7 +148,6 @@ public class Main : MonoBehaviour
 			if (Event.current.type.Equals(EventType.Repaint) && paintCount <= updateCount)
 			{
 				GameMidlet.gameCanvas.paint(g);
-				Mod.gI().paintMain(g);
 				paintCount++;
 				g.reset();
 			}
@@ -285,7 +284,6 @@ public class Main : MonoBehaviour
 			DataInputStream.update();
 			SMS.update();
 			Net.update();
-			Mod.gI().updateMain();
 			f++;
 			if (f > 8)
 			{
@@ -330,6 +328,11 @@ public class Main : MonoBehaviour
 			int num = MyKeyMap.map(Event.current.keyCode);
 			if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
 			{
+				if(Event.current.keyCode > KeyCode.A && Event.current.keyCode < KeyCode.Z)
+				{
+					num = (int)(Event.current.keyCode - 32);
+
+                }
 				switch (Event.current.keyCode)
                 {
                     case KeyCode.BackQuote:
@@ -400,7 +403,6 @@ public class Main : MonoBehaviour
 			if (num != 0)
 			{
 				GameMidlet.gameCanvas.keyPressedz(num);
-				Mod.gI().updateKeyMain();
 			}
 		}
 		if (Event.current.type == EventType.KeyUp)

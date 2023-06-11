@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using System.IO;
 using System.Threading;
 using UnityEngine;
 
@@ -316,7 +317,7 @@ public class Image
 		{
 			throw new Exception("NULL POINTER EXCEPTION AT Image __createImage " + filename);
 		}
-		sbyte[] array = ArrayCast.cast(textAsset.bytes);
+        sbyte[] array = ArrayCast.cast(textAsset.bytes);
 		Debug.LogError("CHIEU DAI MANG BYTE IMAGE CREAT = " + array.Length);
 		return textAsset.bytes;
 	}
@@ -325,7 +326,7 @@ public class Image
 	{
 		Image image = new Image();
 		Texture2D texture2D = Resources.Load(filename) as Texture2D;
-		if (texture2D == null)
+        if (texture2D == null)
 		{
 			throw new Exception("NULL POINTER EXCEPTION AT Image __createImage " + filename);
 		}
@@ -349,8 +350,8 @@ public class Image
 			image.texture.LoadImage(imageData);
 			image.w = image.texture.width;
 			image.h = image.texture.height;
-			setTextureQuality(image);
-			return image;
+			setTextureQuality(image); 
+            return image;
 		}
 		catch (Exception)
 		{

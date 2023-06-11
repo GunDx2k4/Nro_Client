@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using Assets.src.e;
 using UnityEngine;
@@ -108,8 +108,12 @@ public class mGraphics
 			cachedTextures.Add(key, value);
 		}
 	}
-
-	public void translate(int tx, int ty)
+    /// <summary>
+    /// Thay đổi vị trí vẽ thêm x , y đơn vị
+    /// </summary>
+    /// <param name="tx">khoảng cách x thay dổi</param>
+    /// <param name="ty">khoảng cách y thay dổi</param>
+    public void translate(int tx, int ty)
 	{
 		tx *= zoomLevel;
 		ty *= zoomLevel;
@@ -915,11 +919,11 @@ public class mGraphics
 		GUI.DrawTexture(new Rect(x + (float)translateX, y + (float)translateY, image.getRealImageWidth(), image.getRealImageHeight()), image.texture);
 	}
 
-	public void drawImage(Image image, int x, int y, int anchor)
+	public void drawImage(Image image, int x, int y, int anchor , int transform = 0)
 	{
 		if (image != null)
 		{
-			drawRegion(image, 0, 0, getImageWidth(image), getImageHeight(image), 0, x, y, anchor);
+			drawRegion(image, 0, 0, getImageWidth(image), getImageHeight(image), transform, x, y, anchor);
 		}
 	}
 

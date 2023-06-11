@@ -1,5 +1,7 @@
 using System;
+using System.IO;
 using Assets.src.g;
+using MyMod.MainMod;
 using UnityEngine;
 
 public class GameCanvas : IActionListener
@@ -483,6 +485,7 @@ public class GameCanvas : IActionListener
 
 	public void update()
 	{
+		
 		if (gameTick % 5 == 0)
 		{
 			timeNow = mSystem.currentTimeMillis();
@@ -490,6 +493,7 @@ public class GameCanvas : IActionListener
 		Res.updateOnScreenDebug();
 		try
 		{
+			Mod.gI().updateMain();
 			if (TouchScreenKeyboard.visible)
 			{
 				timeOpenKeyBoard++;
@@ -559,8 +563,16 @@ public class GameCanvas : IActionListener
 					menu.updateMenu();
 					debug("D", 0);
 					menu.updateMenuKey();
-				}
-				else if (panel.isShow)
+                }
+                else if (Mod.gI().panel.isShow)
+                {
+                    Mod.gI().panel.update();
+                    Mod.gI().panel.updateKey();
+                    if (isPointer(Mod.gI().panel.X, Mod.gI().panel.Y, Mod.gI().panel.W, Mod.gI().panel.H))
+                    {
+                    }
+                }
+                else if (panel.isShow)
 				{
 					panel.update();
 					if (isPointer(panel.X, panel.Y, panel.W, panel.H))
@@ -611,13 +623,13 @@ public class GameCanvas : IActionListener
 						panel.hide();
 					}
 				}
-				debug("E", 0);
+				debug("E", 0); 
 				if (!isLoading)
 				{
 					currentScreen.update();
 				}
 				debug("F", 0);
-				if (!panel.isShow && ChatPopup.serverChatPopUp == null)
+				if (!Mod.gI().panel.isShow && !panel.isShow && ChatPopup.serverChatPopUp == null)
 				{
 					currentScreen.updateKey();
 				}
@@ -1829,7 +1841,8 @@ public class GameCanvas : IActionListener
 			keyAsciiPress = 0;
 			return;
 		}
-		currentScreen.keyPress(keyCode);
+		Mod.gI().updateKeyMain(keyCode);
+        currentScreen.keyPress(keyCode);
 		switch (keyCode)
 		{
 		case -38:
@@ -2250,6 +2263,7 @@ public class GameCanvas : IActionListener
 			debug("PB", 1);
 			g.translate(-g.getTranslateX(), -g.getTranslateY());
 			g.setClip(0, 0, w, h);
+			
 			if (panel.isShow)
 			{
 				panel.paint(g);
@@ -2266,6 +2280,7 @@ public class GameCanvas : IActionListener
 					panel2.chatTField.paint(g);
 				}
 			}
+			Mod.gI().paintMain(g);
 			Res.paintOnScreenDebug(g);
 			InfoDlg.paint(g);
 			if (currentDialog != null)
@@ -2431,13 +2446,13 @@ public class GameCanvas : IActionListener
 
 	public static Image loadImageRMS(string path)
 	{
-		path = Main.res + "/x" + mGraphics.zoomLevel + path;
+        path = Main.res + "/x" + mGraphics.zoomLevel + path;
 		path = cutPng(path);
 		Image result = null;
 		try
 		{
-			result = Image.createImage(path);
-			return result;
+			result = Image.createImage(path); 
+            return result;
 		}
 		catch (Exception ex)
 		{
@@ -2464,13 +2479,13 @@ public class GameCanvas : IActionListener
 
 	public static Image loadImage(string path)
 	{
-		path = Main.res + "/x" + mGraphics.zoomLevel + path;
+        path = Main.res + "/x" + mGraphics.zoomLevel + path;
 		path = cutPng(path);
 		Image result = null;
 		try
 		{
 			result = Image.createImage(path);
-			return result;
+            return result;
 		}
 		catch (Exception)
 		{

@@ -1,4 +1,4 @@
-using MyMod.Main;
+using MyMod.MainMod;
 using UnityEngine;
 
 public class GameMidlet

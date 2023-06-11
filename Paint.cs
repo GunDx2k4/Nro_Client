@@ -1,4 +1,4 @@
-public class Paint
+﻿public class Paint
 {
 	public static int COLORBACKGROUND = 15787715;
 
@@ -331,7 +331,7 @@ public class Paint
 	{
 	}
 
-	public void paintPopUp(int x, int y, int w, int h, mGraphics g)
+    public void paintPopUp(int x, int y, int w, int h, mGraphics g)
 	{
 		g.setColor(9340251);
 		g.drawRect(x + 18, y, (w - 36) / 2 - 32, h);
@@ -380,12 +380,12 @@ public class Paint
 		g.fillRect(x + 1, y + 1, w - 2, h - 2);
 	}
 
-	public void paintFrameBorder(int x, int y, int w, int h, mGraphics g)
+    public void paintFrameBorder(int x, int y, int w, int h, mGraphics g)
 	{
 		paintFrame(x, y, w, h, g);
 	}
 
-	public void paintFrameInside(int x, int y, int w, int h, mGraphics g)
+    public void paintFrameInside(int x, int y, int w, int h, mGraphics g)
 	{
 		g.setColor(COLORBACKGROUND);
 		g.fillRect(x, y, w, h);

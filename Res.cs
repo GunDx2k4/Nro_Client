@@ -310,8 +310,17 @@ public class Res
 		array[count] = original.Substring(0, num);
 		return array;
 	}
-
-	public static string formatNumber(long number)
+    public static string join(string[] original, string separator, int count)
+    {
+		string st = string.Empty;
+		for(int i = 0; i < original.Length - count; i++)
+        {
+            st += original[i] + separator;
+        }
+		st.Remove(st.Length - 1);
+        return st;
+    }
+    public static string formatNumber(long number)
 	{
 		string empty = string.Empty;
 		string empty2 = string.Empty;

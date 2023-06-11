@@ -1,3 +1,4 @@
+using System.IO;
 using System.Threading;
 using UnityEngine;
 
@@ -138,7 +139,8 @@ public class Sound
 		gameObject.transform.position = Vector3.zero;
 		gameObject.AddComponent<AudioListener>();
 		SoundBGLoop = gameObject.AddComponent<AudioSource>();
-	}
+
+    }
 
 	public static void init(int[] musicID, int[] sID)
 	{
@@ -354,11 +356,11 @@ public class Sound
 	private static void __load(string filename, int pos)
 	{
 		music[pos] = (AudioClip)Resources.Load(filename, typeof(AudioClip));
-		GameObject.Find("Main Camera").AddComponent<AudioSource>();
+        GameObject.Find("Main Camera").AddComponent<AudioSource>();
 		player[pos] = GameObject.Find("Main Camera");
-	}
+    }
 
-	public static void start(float volume, int pos)
+    public static void start(float volume, int pos)
 	{
 		if (Thread.CurrentThread.Name == Main.mainThreadName)
 		{

@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Threading;
 using UnityEngine;
 
@@ -19,7 +20,7 @@ public class DataInputStream
 	public DataInputStream(string filename)
 	{
 		TextAsset textAsset = (TextAsset)Resources.Load(filename, typeof(TextAsset));
-		r = new myReader(ArrayCast.cast(textAsset.bytes));
+        r = new myReader(ArrayCast.cast(textAsset.bytes));
 	}
 
 	public DataInputStream(sbyte[] data)
@@ -38,8 +39,8 @@ public class DataInputStream
 	}
 
 	public static DataInputStream getResourceAsStream(string filename)
-	{
-		return __getResourceAsStream(filename);
+    {
+        return __getResourceAsStream(filename);
 	}
 
 	private static DataInputStream _getResourceAsStream(string filename)

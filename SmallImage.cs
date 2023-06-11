@@ -1,5 +1,6 @@
 using System;
 using Assets.src.e;
+using MyMod.MainMod;
 
 public class SmallImage
 {
@@ -152,7 +153,7 @@ public class SmallImage
 		if (imgbig == null)
 		{
 			Small small = imgNew[id];
-			if (small == null)
+            if (small == null)
 			{
 				createImage(id);
 			}
@@ -266,7 +267,7 @@ public class SmallImage
 			{
 				num++;
 				imgNew[i].update();
-				smallCount++;
+                smallCount++;
 			}
 		}
 		if (num > 200 && GameCanvas.lowGraphic)

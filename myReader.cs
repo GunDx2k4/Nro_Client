@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Text;
 using UnityEngine;
 
@@ -26,7 +27,7 @@ public class myReader
 	public myReader(string filename)
 	{
 		TextAsset textAsset = (TextAsset)Resources.Load(filename, typeof(TextAsset));
-		buffer = mSystem.convertToSbyte(textAsset.bytes);
+        buffer = mSystem.convertToSbyte(textAsset.bytes);
 	}
 
 	public sbyte readSByte()

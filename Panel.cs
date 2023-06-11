@@ -1,5 +1,6 @@
 using System;
 using Assets.src.g;
+using MyMod.MainMod;
 using UnityEngine;
 
 public class Panel : IActionListener, IChatable
@@ -827,7 +828,7 @@ public class Panel : IActionListener, IChatable
 		return -1;
 	}
 
-	private void setType(int position)
+	public void setType(int position)
 	{
 		typeShop = -1;
 		W = WIDTH_PANEL;
@@ -5513,7 +5514,7 @@ public class Panel : IActionListener, IChatable
 		paintScrollArrow(g);
 	}
 
-	private void paintTab(mGraphics g)
+	public void paintTab(mGraphics g)
 	{
 		if (type == 23 || type == 24)
 		{
@@ -5679,7 +5680,7 @@ public class Panel : IActionListener, IChatable
 		g.fillRect(1, 78, W - 2, 1);
 	}
 
-	private void paintBottomMoneyInfo(mGraphics g)
+	public void paintBottomMoneyInfo(mGraphics g)
 	{
 		if (type != 13 || (currentTabIndex != 2 && !Equals(GameCanvas.panel2)))
 		{
@@ -5953,7 +5954,7 @@ public class Panel : IActionListener, IChatable
 		mFont.tahoma_7_yellow.drawString(g, mResources.armor + ": " + Char.myCharz().cDefull + ", " + mResources.critical + ": " + Char.myCharz().cCriticalFull + "%", X + 60, 38, mFont.LEFT, mFont.tahoma_7_grey);
 	}
 
-	private void paintTopInfo(mGraphics g)
+	public void paintTopInfo(mGraphics g)
 	{
 		g.setClip(X + 1, Y, W - 2, yScroll - 2);
 		g.setColor(9993045);
@@ -7563,6 +7564,7 @@ public class Panel : IActionListener, IChatable
 	{
 		InfoDlg.showWait();
 		Service.gI().petInfo();
+		Util.openUIPet();
 		timeShow = 20;
 	}
 

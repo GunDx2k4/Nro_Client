@@ -1,5 +1,9 @@
 using System;
 using System.Collections;
+using System.Drawing.Drawing2D;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Xml.Linq;
 using UnityEngine;
 
 public class mFont
@@ -170,7 +174,7 @@ public class mFont
 			try
 			{
 				dataInputStream = MyStream.readFile(pathData);
-				fImages = new int[dataInputStream.readShort()][];
+                fImages = new int[dataInputStream.readShort()][];
 				for (int i = 0; i < fImages.Length; i++)
 				{
 					fImages[i] = new int[4];
@@ -200,7 +204,8 @@ public class mFont
 		}
 	}
 
-	public mFont(sbyte id)
+
+    public mFont(sbyte id)
 	{
 		string text = "chelthm";
 		if ((id > 0 && id < 10) || id == 19)
@@ -233,7 +238,7 @@ public class mFont
 		wO = getWidthExactOf("o");
 	}
 
-	public static void init()
+    public static void init()
 	{
 		if (mGraphics.zoomLevel == 1)
 		{

@@ -1,6 +1,7 @@
 using System;
+using System.IO;
 using Assets.src.g;
-using MyMod.Main;
+using MyMod.MainMod;
 
 public class GameScr : mScreen, IChatable
 {
@@ -977,8 +978,8 @@ public class GameScr : mScreen, IChatable
 		imgSkill2 = GameCanvas.loadImage("/mainImage/myTexture2dskill2.png");
 		imgMenu = GameCanvas.loadImage("/mainImage/myTexture2dmenu.png");
 		imgFocus = GameCanvas.loadImage("/mainImage/myTexture2dfocus.png");
-		imgHP_tm_do = GameCanvas.loadImage("/mainImage/tm-do.png");
-		imgHP_tm_vang = GameCanvas.loadImage("/mainImage/tm-vang.png");
+        imgHP_tm_do = GameCanvas.loadImage("/mainImage/tm-do.png");
+        imgHP_tm_vang = GameCanvas.loadImage("/mainImage/tm-vang.png");
 		imgHP_tm_xam = GameCanvas.loadImage("/mainImage/tm-xam.png");
 		imgHP_tm_xanh = GameCanvas.loadImage("/mainImage/tm-xanh.png");
 		imgChatPC = GameCanvas.loadImage("/pc/chat.png");
@@ -2492,17 +2493,19 @@ public class GameScr : mScreen, IChatable
 	}
 
 	public override void keyPress(int keyCode)
-	{
-		base.keyPress(keyCode);
+    {
+        base.keyPress(keyCode);
 	}
 
 	public override void updateKey()
 	{
-		if (Controller.isStopReadMessage || Char.myCharz().isTeleport || InfoDlg.isLock || Mod.gI().updateKeyGameScr())
+		if (Controller.isStopReadMessage || Char.myCharz().isTeleport || InfoDlg.isLock)
 		{
 			return;
-		}
-		if (GameCanvas.isTouch && !ChatTextField.gI().isShow && !GameCanvas.menu.showMenu)
+        }
+        if (Mod.gI().updateKeyGameScr())
+            return;
+        if (GameCanvas.isTouch && !ChatTextField.gI().isShow && !GameCanvas.menu.showMenu)
 		{
 			updateKeyTouchControl();
 		}
@@ -4967,7 +4970,7 @@ public class GameScr : mScreen, IChatable
 			npc2.paintName(g);
 		}
 		EffecMn.paintLayer3(g);
-		for (int i = 0; i < vNpc.size(); i++)
+        for (int i = 0; i < vNpc.size(); i++)
 		{
 			Npc npc3 = (Npc)vNpc.elementAt(i);
 			if (npc3.chatInfo != null)
@@ -5074,8 +5077,8 @@ public class GameScr : mScreen, IChatable
 					}
 				}
 			}
-		}
-		mSystem.paintFlyText(g);
+        }
+        mSystem.paintFlyText(g);
 		GameCanvas.debug("PA14", 1);
 		GameCanvas.debug("PA15", 1);
 		GameCanvas.debug("PA16", 1);
@@ -5086,10 +5089,10 @@ public class GameScr : mScreen, IChatable
 			paintInfoBar(g);
 		}
 		resetTranslate(g);
-		paint_xp_bar(g);
+        Mod.gI().paintGameScr(g);
+        paint_xp_bar(g);
 		if (!isPaintOther)
         {
-            Mod.gI().paintGameScr(g);
             if (GameCanvas.open3Hour)
 			{
 				if (GameCanvas.w > 250)
