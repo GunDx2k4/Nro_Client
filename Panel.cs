@@ -497,7 +497,7 @@ public class Panel : IActionListener, IChatable
 
 	private bool isSelectPlayerMenu;
 
-	private string[] strStatus = new string[6]
+	public string[] strStatus = new string[6]
 	{
 		mResources.follow,
 		mResources.defend,

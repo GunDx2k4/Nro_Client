@@ -2,7 +2,6 @@
 using MyMod.MainMod;
 using MyMod.Model;
 using System;
-using System.Drawing;
 using UnityEngine;
 
 namespace MyMod.View
@@ -17,7 +16,11 @@ namespace MyMod.View
         public CommandMod cmdClose;
         public CommandMod cmdCallFB;
         public CommandMod cmdCallDownload;
-        public CommandMod cmdAttackPet;
+
+        public CommandMod cmdAttackPet; 
+        public CommandMod cmdDefendPet;
+        public CommandMod cmdFollowPet;
+        public CommandMod cmdGoHomePet;
 
         public bool isShow;
 
@@ -25,7 +28,12 @@ namespace MyMod.View
 
         public string[][] tabName;
         public int currentTabIndex;
+        public int selected;
 
+        public string[] strStatus;
+
+        public Item currItem;
+        public ChatPopup cp;
 
         public MyPanel()
         {
@@ -50,8 +58,35 @@ namespace MyMod.View
             cmdCallDownload.h = mFont.tahoma_7b_white.getHeight();
 
             cmdAttackPet = new CommandMod("Tấn Công",this, 4);
+            cmdAttackPet.setType(1);
+            cmdAttackPet.x = X + W / 2 - 9 + 12 + 10;
+            cmdAttackPet.y = Y + H / 4 + 37 + 90;
+
+            cmdDefendPet = new CommandMod("Bảo Vệ", this, 5);
+            cmdDefendPet.setType(1);
+            cmdDefendPet.x = cmdAttackPet.x + cmdAttackPet.w + 2;
+            cmdDefendPet.y = Y + H / 4 + 37 + 90;
+
+            cmdFollowPet = new CommandMod("Đi Theo", this, 6);
+            cmdFollowPet.setType(1);
+            cmdFollowPet.x = cmdDefendPet.x + cmdDefendPet.w + 2;
+            cmdFollowPet.y = Y + H / 4 + 37 + 90;
+
+            cmdGoHomePet = new CommandMod("Về Nhà", this, 7);
+            cmdGoHomePet.setType(1);
+            cmdGoHomePet.x = cmdFollowPet.x + cmdFollowPet.w + 2;
+            cmdGoHomePet.y = Y + H / 4 + 37 + 90;
 
             imgTitle = GameCanvas.loadImage("/mainImage/logo1.png");
+
+            strStatus = new string[5]
+            {
+                "Đi Theo",
+                "Bảo Vệ",
+                "Tấn Công",
+                "Về Nhà",
+                "Hợp Thể"
+            };
 
             tabName = new string[11][]
             {
@@ -102,6 +137,8 @@ namespace MyMod.View
                     "test"
                 },
             };
+
+            selected = -1;
             currentTabIndex = 0;
         }
 
@@ -111,7 +148,7 @@ namespace MyMod.View
             {
                 case 0:
                     {
-
+                        doFireInfo();
                     }
                     break;
                 case 1:
@@ -196,10 +233,45 @@ namespace MyMod.View
                 if (GameCanvas.isPointerJustRelease)
                 {
                     currentTabIndex = i;
-                    GameCanvas.isPointerJustRelease = false;
-                    break;
+                    GameCanvas.clearAllPointerEvent();
+                    return;
                 }
             }
+
+            if (cp != null)
+            {
+                int x = 6 + 15;
+                int y = H / 4 + 37 + 85; 
+
+                if (!GameCanvas.isPointer(X + x + (2 + 34 + 4) * selected, Y + y, 34 + 4, 24 + 4))
+                {
+                    cp = null;
+                    return;
+                }
+                cp.updateKey();
+            }
+
+            if (cmdAttackPet.isPointerPressInside())
+            {
+                cmdAttackPet.performAction();
+                return;
+            }
+            if (cmdDefendPet.isPointerPressInside())
+            {
+                cmdDefendPet.performAction();
+                return;
+            }
+            if (cmdFollowPet.isPointerPressInside())
+            {
+                cmdFollowPet.performAction();
+                return;
+            }
+            if (cmdGoHomePet.isPointerPressInside())
+            {
+                cmdGoHomePet.performAction();
+                return;
+            }
+
             if (cmdClose.isPointerPressInside())
             {
                 cmdClose.performAction();
@@ -244,6 +316,30 @@ namespace MyMod.View
                 case 3:
                     {
                         Application.OpenURL("https://github.com/GunDx2k4");
+                    }
+                    break;
+                case 4:
+                    {
+                        //Attack
+                        Service.gI().petStatus((sbyte)2);
+                    }
+                    break;
+                case 5:
+                    {
+                        //Defend
+                        Service.gI().petStatus((sbyte)1);
+                    }
+                    break;
+                case 6:
+                    {
+                        //Follow
+                        Service.gI().petStatus((sbyte)0);
+                    }
+                    break;
+                case 7:
+                    {
+                        //Go Home
+                        Service.gI().petStatus((sbyte)3);
                     }
                     break;
             }
@@ -320,20 +416,14 @@ namespace MyMod.View
                 }
                 GameScr.resetTranslate(g);
                 cmdClose.paint(g);
+                paintDetail(g);
 
             }
         }
 
         public void paintTopInfo(mGraphics g)
         {
-
-            //Ve Vien
-            g.setColor(6702080);
-            g.fillRect(0, 0, W, H / 4);
-
-            //Ve Khung
-            g.setColor(9993045);
-            g.fillRect(1, 1, W - 2, H / 4 - 2);
+            paintFrame(g, 1, 1, W - 2, H / 4 - 2);
 
             SmallImage.drawSmallImage(g, 4520, 5, H / 4, 0, StaticObj.BOTTOM_LEFT);
             //g.drawImage(imgTitle, 5, 27 , StaticObj.VCENTER_LEFT);
@@ -345,7 +435,6 @@ namespace MyMod.View
 
         public void paintTab(mGraphics g)
         {
-
             //Ve vien
             g.setColor(13524492);
             g.fillRect(1, H / 4 + 32, W - 2, 1);
@@ -371,14 +460,11 @@ namespace MyMod.View
             int w1 = W / 2 - 9;
             int h1 = H - (H / 4 + 37 + 6);
 
-            g.setColor(6702080);
-            g.fillRect(5, H / 4 + 36, w1, h1);
+            g.setClip(5, H / 4 + 36, w1 * 2 + 12 + 2, h1 + 2);
+            //Ve Thong Tin Su Phu
+            paintFrame(g, 6, H / 4 + 38, w1, h1);
 
-            g.setColor(9993045);
-            g.fillRect(6, H / 4 + 37, w1 - 2, h1 - 2);
-            g.setClip(5, H / 4 + 36, w1 * 2 + 12 , h1 + 1);
-
-            SmallImage.drawSmallImage(g, Char.myCharz().avatarz(), 6 + 5, H / 4 + 37 + 55, 0, StaticObj.BOTTOM_LEFT);
+            SmallImage.drawSmallImage(g, Char.myCharz().avatarz(), 6 + 5, H / 4 + 37 + 65, 0, StaticObj.BOTTOM_LEFT);
             Util.draw2ColorBD(g, $"Sư Phụ : ", $"{Char.myCharz().cName}", mFont.tahoma_7b_yellow, mFont.tahoma_7b_white, 6 + 100, H / 4 + 37);
             mFont.tahoma_7_yellow.drawString(g, $"Sức Mạnh : {NinjaUtil.getMoneys(Char.myCharz().cPower)}", 6 + 100, H / 4 + 37 + 10, mFont.LEFT);
             mFont.tahoma_7_yellow.drawString(g, $"Tiềm năng : {NinjaUtil.getMoneys(Char.myCharz().cTiemNang)}", 6 + 100, H / 4 + 37 + 20, mFont.LEFT);
@@ -386,21 +472,319 @@ namespace MyMod.View
             mFont.tahoma_7_yellow.drawString(g, $"MP : {NinjaUtil.getMoneys(Char.myCharz().cMP)}/{NinjaUtil.getMoneys(Char.myCharz().cMPFull)}", 6 + 100, H / 4 + 37 + 40, mFont.LEFT);
             mFont.tahoma_7_yellow.drawString(g, $"SĐ : {NinjaUtil.getMoneys(Char.myCharz().cDamFull)}", 6 + 100, H / 4 + 37 + 50, mFont.LEFT);
             mFont.tahoma_7_yellow.drawString(g, $"Giáp: {NinjaUtil.getMoneys(Char.myCharz().cDefull)}, CM : {Char.myCharz().cCriticalFull} %", 6 + 100, H / 4 + 37 + 60, mFont.LEFT);
-            
 
-            g.setColor(6702080);
-            g.fillRect(w1 + 11, H / 4 + 36, w1, h1);
-            g.setColor(9993045);
-            g.fillRect(w1 + 12, H / 4 + 37, w1 - 2, h1 - 2);
+            mFont.tahoma_7b_white.drawString(g, $"Set Đồ :", 6 + 15, H / 4 + 37 + 70, mFont.LEFT);
+            int x = 6 + 15;
+            int y = H / 4 + 37 + 85;
+            for(int i = 0; i < 5; i++)
+            {
+                g.setColor(14338484);
+                g.fillRect(x + (2 + 34 + 4) * i - 2, y - 2, 34 + 4, 24 + 4);
+                g.setColor(i == selected ? 16383818 : 15723751);
+                g.fillRect(x + (2 + 34 + 4) * i, y, 34, 24);
+                SmallImage.drawSmallImage(g, Char.myCharz().arrItemBody[i].template.iconID, x + (2 + 34 + 4) * i + 34 / 2, y + 24 / 2, 0, 3);
+            }
 
-            SmallImage.drawSmallImage(g, Char.myPetz().avatarz(), w1 + 12 + 5, H / 4 + 37 + 55, 0, StaticObj.BOTTOM_LEFT);
-            Util.draw2ColorBD(g, $"Sư Phụ : ", $"{Char.myPetz().cName}", mFont.tahoma_7b_yellow, mFont.tahoma_7b_white, w1 + 12 + 100, H / 4 + 37);
+            //Ve Thong Tin De Tu
+            paintFrame(g, w1 + 12, H / 4 + 38, w1, h1);
+
+            SmallImage.drawSmallImage(g, Char.myPetz().avatarz(), w1 + 12 + 5, H / 4 + 37 + 65, 0, StaticObj.BOTTOM_LEFT);
+            Util.draw2ColorBD(g, $"Đệ Tử : ", $"{Char.myPetz().cName}", mFont.tahoma_7b_yellow, mFont.tahoma_7b_white, w1 + 12 + 100, H / 4 + 37);
             mFont.tahoma_7_yellow.drawString(g, $"Sức Mạnh : {NinjaUtil.getMoneys(Char.myPetz().cPower)}", w1 + 12 + 100, H / 4 + 37 + 10, mFont.LEFT);
             mFont.tahoma_7_yellow.drawString(g, $"Tiềm năng : {NinjaUtil.getMoneys(Char.myPetz().cTiemNang)}", w1 + 12 + 100, H / 4 + 37 + 20, mFont.LEFT);
             mFont.tahoma_7_yellow.drawString(g, $"HP : {NinjaUtil.getMoneys(Char.myPetz().cHP)}/{NinjaUtil.getMoneys(Char.myPetz().cHPFull)}", w1 + 12 + 100, H / 4 + 37 + 30, mFont.LEFT);
             mFont.tahoma_7_yellow.drawString(g, $"MP : {NinjaUtil.getMoneys(Char.myPetz().cMP)}/{NinjaUtil.getMoneys(Char.myPetz().cMPFull)}", w1 + 12 + 100, H / 4 + 37 + 40, mFont.LEFT);
-            mFont.tahoma_7_yellow.drawString(g, $"SĐ : {NinjaUtil.getMoneys(Char.myPetz().cDamFull)}", w1 + 12 + 100, H / 4 + 37 + 50, mFont.LEFT);
-            mFont.tahoma_7_yellow.drawString(g, $"Giáp: {NinjaUtil.getMoneys(Char.myPetz().cDefull)}, CM : {Char.myPetz().cCriticalFull} %", w1 + 12 + 100, H / 4 + 37 + 60, mFont.LEFT);
+            mFont.tahoma_7_yellow.drawString(g, $"SĐ : {NinjaUtil.getMoneys(Char.myPetz().cDamFull)}, Giáp: {NinjaUtil.getMoneys(Char.myPetz().cDefull)}", w1 + 12 + 100, H / 4 + 37 + 50, mFont.LEFT);
+            mFont.tahoma_7_yellow.drawString(g, $"CM : {Char.myPetz().cCriticalFull}%, Trạng thái : {strStatus[Char.myPetz().petStatus]}", w1 + 12 + 100, H / 4 + 37 + 60, mFont.LEFT);
+            mFont.tahoma_7b_white.drawString(g, $"Đổi trạng thái :", w1 + 12 + 15, H / 4 + 37 + 70, mFont.LEFT);
+
+
+            GameScr.resetTranslate(g);
+
+            cmdAttackPet.paint(g);
+            cmdDefendPet.paint(g);
+            cmdFollowPet.paint(g);
+            cmdGoHomePet.paint(g);
+
+        }
+
+        public void doFireInfo()
+        {
+            int x = 6 + 15;
+            int y = H / 4 + 37 + 85;
+            for (int i = 0; i < 5; i++)
+            {
+                if (!GameCanvas.isPointer(X + x + (2 + 34 + 4) * i, Y + y, 34, 24))
+                {
+                    continue;
+                }
+                if (GameCanvas.isPointerJustRelease)
+                {
+                    selected = i;
+                    GameCanvas.isPointerJustRelease = false;
+                    currItem = Char.myCharz().arrItemBody[i];
+                    Char.myCharz().setPartTemp(currItem.headTemp, currItem.bodyTemp, currItem.legTemp, currItem.bagTemp);
+                    addItemDetail(currItem);
+                    break;
+                }
+            }
+            
+        }
+
+        public void paintDetail(mGraphics g)
+        {
+            if (cp == null)
+                return;
+            cp.paint(g);
+        }
+
+        public void addItemDetail(Item item)
+        {
+            try
+            {
+                cp = new ChatPopup();
+                string empty = string.Empty;
+                string text = string.Empty;
+                if (item.template.gender != Char.myCharz().cgender)
+                {
+                    if (item.template.gender == 0)
+                    {
+                        text = text + "\n|7|1|" + mResources.from_earth;
+                    }
+                    else if (item.template.gender == 1)
+                    {
+                        text = text + "\n|7|1|" + mResources.from_namec;
+                    }
+                    else if (item.template.gender == 2)
+                    {
+                        text = text + "\n|7|1|" + mResources.from_sayda;
+                    }
+                }
+                string text2 = string.Empty;
+                if (item.itemOption != null)
+                {
+                    for (int i = 0; i < item.itemOption.Length; i++)
+                    {
+                        if (item.itemOption[i].optionTemplate.id == 72)
+                        {
+                            text2 = " [+" + item.itemOption[i].param + "]";
+                        }
+                    }
+                }
+                bool flag = false;
+                if (item.itemOption != null)
+                {
+                    for (int j = 0; j < item.itemOption.Length; j++)
+                    {
+                        if (item.itemOption[j].optionTemplate.id == 41)
+                        {
+                            flag = true;
+                            if (item.itemOption[j].param == 1)
+                            {
+                                text = text + "|0|1|" + item.template.name + text2;
+                            }
+                            if (item.itemOption[j].param == 2)
+                            {
+                                text = text + "|2|1|" + item.template.name + text2;
+                            }
+                            if (item.itemOption[j].param == 3)
+                            {
+                                text = text + "|8|1|" + item.template.name + text2;
+                            }
+                            if (item.itemOption[j].param == 4)
+                            {
+                                text = text + "|7|1|" + item.template.name + text2;
+                            }
+                        }
+                    }
+                }
+                if (!flag)
+                {
+                    text = text + "|0|1|" + item.template.name + text2;
+                }
+                if (item.itemOption != null)
+                {
+                    for (int k = 0; k < item.itemOption.Length; k++)
+                    {
+                        if (item.itemOption[k].optionTemplate.name.StartsWith("$") ? true : false)
+                        {
+                            empty = item.itemOption[k].getOptiongColor();
+                            if (item.itemOption[k].param == 1)
+                            {
+                                text = text + "\n|1|1|" + empty;
+                            }
+                            if (item.itemOption[k].param == 0)
+                            {
+                                text = text + "\n|0|1|" + empty;
+                            }
+                            continue;
+                        }
+                        empty = item.itemOption[k].getOptionString();
+                        if (!empty.Equals(string.Empty) && item.itemOption[k].optionTemplate.id != 72)
+                        {
+                            if (item.itemOption[k].optionTemplate.id == 102)
+                            {
+                                cp.starSlot = (sbyte)item.itemOption[k].param;
+                                Res.outz("STAR SLOT= " + cp.starSlot);
+                            }
+                            else if (item.itemOption[k].optionTemplate.id == 107)
+                            {
+                                cp.maxStarSlot = (sbyte)item.itemOption[k].param;
+                                Res.outz("STAR SLOT= " + cp.maxStarSlot);
+                            }
+                            else
+                            {
+                                text = text + "\n|1|1|" + empty;
+                            }
+                        }
+                    }
+                }
+                if (currItem.template.strRequire > 1)
+                {
+                    string text3 = mResources.pow_request + ": " + currItem.template.strRequire;
+                    if (currItem.template.strRequire > Char.myCharz().cPower)
+                    {
+                        text = text + "\n|3|1|" + text3;
+                        string text4 = text;
+                        text = text4 + "\n|3|1|" + mResources.your_pow + ": " + Char.myCharz().cPower;
+                    }
+                    else
+                    {
+                        text = text + "\n|6|1|" + text3;
+                    }
+                }
+                else
+                {
+                    text += "\n|6|1|";
+                }
+                currItem.compare = getCompare(currItem);
+                text += "\n--";
+                text = text + "\n|6|" + item.template.description;
+                if (!item.reason.Equals(string.Empty))
+                {
+                    if (!item.template.description.Equals(string.Empty))
+                    {
+                        text += "\n--";
+                    }
+                    text = text + "\n|2|" + item.reason;
+                }
+                if (cp.maxStarSlot > 0)
+                {
+                    text += "\n\n";
+                }
+                popUpDetailInit(cp, text);
+            }
+            catch (Exception ex)
+            {
+                Res.outz("ex " + ex.StackTrace);
+            }
+        }
+
+        public void popUpDetailInit(ChatPopup cp, string chat)
+        {
+            int x = X + 6 + 15;
+            int y = Y + H / 4 + 37 + 85;
+            cp.isClip = false;
+            cp.sayWidth = 180;
+            cp.cx = x + (2 + 34 + 4) * selected - 2;
+            cp.says = mFont.tahoma_7_red.splitFontArray(chat, cp.sayWidth - 10);
+            cp.delay = 10000000;
+            cp.c = null;
+            cp.sayRun = 7;
+            cp.ch = 15 - cp.sayRun + cp.says.Length * 12 + 10;
+            if (cp.ch > GameCanvas.h - 80)
+            {
+                cp.ch = GameCanvas.h - 80;
+                cp.lim = cp.says.Length * 12 - cp.ch + 17;
+                if (cp.lim < 0)
+                {
+                    cp.lim = 0;
+                }
+                ChatPopup.cmyText = 0;
+                cp.isClip = true;
+            }
+            cp.cy = y - cp.ch - 5 - 28;
+            cp.mH = 0;
+            cp.strY = 10;
+        }
+
+        public int getCompare(Item item)
+        {
+            if (item == null)
+            {
+                return -1;
+            }
+            if (item.isTypeBody())
+            {
+                if (item.itemOption == null)
+                {
+                    return -1;
+                }
+                ItemOption itemOption = item.itemOption[0];
+                if (itemOption.optionTemplate.id == 22)
+                {
+                    itemOption.optionTemplate = GameScr.gI().iOptionTemplates[6];
+                    itemOption.param *= 1000;
+                }
+                if (itemOption.optionTemplate.id == 23)
+                {
+                    itemOption.optionTemplate = GameScr.gI().iOptionTemplates[7];
+                    itemOption.param *= 1000;
+                }
+                Item item2 = null;
+                for (int i = 0; i < Char.myCharz().arrItemBody.Length; i++)
+                {
+                    Item item3 = Char.myCharz().arrItemBody[i];
+                    if (itemOption.optionTemplate.id == 22)
+                    {
+                        itemOption.optionTemplate = GameScr.gI().iOptionTemplates[6];
+                        itemOption.param *= 1000;
+                    }
+                    if (itemOption.optionTemplate.id == 23)
+                    {
+                        itemOption.optionTemplate = GameScr.gI().iOptionTemplates[7];
+                        itemOption.param *= 1000;
+                    }
+                    if (item3 != null && item3.itemOption != null && item3.template.type == item.template.type)
+                    {
+                        item2 = item3;
+                        break;
+                    }
+                }
+                if (item2 == null)
+                {
+                    Res.outz("5");
+                    //isUp = true;
+                    return itemOption.param;
+                }
+                int num = ((item2 == null || item2.itemOption == null) ? itemOption.param : (itemOption.param - item2.itemOption[0].param));
+                if (num < 0)
+                {
+                    //isUp = false;
+                }
+                else
+                {
+                    //isUp = true;
+                }
+                return num;
+            }
+            return 0;
+        }
+
+        public void paintFrame(mGraphics g, int x, int y, int w, int h)
+        {
+            g.setColor(6702080);
+            g.fillRect(x-1, y - 1, w + 2, h + 2);
+            g.setColor(9993045);
+            g.fillRect(x, y, w, h);
+        }
+
+        public void paintFrame2(mGraphics g, int x, int y, int w, int h)
+        {
+            g.setColor(14338484); 
+            g.fillRect(x - 2, y - 2, w + 4, h + 4);
+            g.setColor(15723751);
+            g.fillRect(x, y, w, h);
         }
 
         public void resetTranslate(mGraphics g)
@@ -419,6 +803,7 @@ namespace MyMod.View
         public void hide()
         {
             isShow = false;
+            cp = null;
         }
     }
 

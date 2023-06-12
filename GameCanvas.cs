@@ -2690,10 +2690,10 @@ public class GameCanvas : IActionListener
 
 	public static bool isPointer(int x, int y, int w, int h)
 	{
-		if (!isPointerDown && !isPointerJustRelease)
-		{
-			return false;
-		}
+		/*if (!isPointerDown && !isPointerJustRelease)
+        {
+            return false;
+		}*/
 		if (px >= x && px <= x + w && py >= y && py <= y + h)
 		{
 			return true;
