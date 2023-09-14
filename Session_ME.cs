@@ -363,11 +363,13 @@ public class Session_ME : ISession
 		doSendMessage(new Message(-27));
 	}
 
+	public static string msg = "Message send : ";
 	public void sendMessage(Message message)
 	{
 		count++;
-		Res.outz("SEND MSG: " + message.command);
-		sender.AddMessage(message);
+		File.AppendAllText("send.txt",$"{message.command} | ");
+        Res.outz("SEND MSG: " + message.command);
+        sender.AddMessage(message);
 	}
 
 	private static void doSendMessage(Message m)

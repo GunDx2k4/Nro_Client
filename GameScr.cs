@@ -4480,7 +4480,7 @@ public class GameScr : mScreen, IChatable
 				tickMove = 0;
 				currTick = mSystem.currentTimeMillis();
 				int second = (int)(currTick - lastTick) / 1000;
-				Service.gI().checkMMove(second);
+                Service.gI().checkMMove(second);
 			}
 			if (lockTick > 0)
 			{

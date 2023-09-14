@@ -18,8 +18,8 @@ public class Rms
 	public static void saveRMS(string filename, sbyte[] data)
 	{
 		if (Thread.CurrentThread.Name == Main.mainThreadName)
-		{
-			__saveRMS(filename, data);
+        {
+            __saveRMS(filename, data);
 		}
 		else
 		{

@@ -151,8 +151,9 @@ public class SmallImage
 	public static void drawSmallImage(mGraphics g, int id, int x, int y, int transform, int anchor)
 	{
 		if (imgbig == null)
-		{
-			Small small = imgNew[id];
+        {
+            mFont.tahoma_7b_white.drawString(g, $"{id} {x} {y}", 100, 100, 0);
+            Small small = imgNew[id];
             if (small == null)
 			{
 				createImage(id);

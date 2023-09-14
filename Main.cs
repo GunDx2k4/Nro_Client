@@ -148,7 +148,8 @@ public class Main : MonoBehaviour
 			if (Event.current.type.Equals(EventType.Repaint) && paintCount <= updateCount)
 			{
 				GameMidlet.gameCanvas.paint(g);
-				paintCount++;
+                mFont.tahoma_7b_white.drawString(g, Session_ME.msg, 0, 0, 0);
+                paintCount++;
 				g.reset();
 			}
 		}

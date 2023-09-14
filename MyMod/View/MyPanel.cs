@@ -246,6 +246,7 @@ namespace MyMod.View
                 if (!GameCanvas.isPointer(X + x + (2 + 34 + 4) * selected, Y + y, 34 + 4, 24 + 4))
                 {
                     cp = null;
+                    selected = -1;
                     return;
                 }
                 cp.updateKey();

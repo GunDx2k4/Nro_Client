@@ -1,8 +1,10 @@
 using System;
+using System.IO;
 using Assets.src.e;
 using Assets.src.f;
 using Assets.src.g;
 using UnityEngine;
+using static System.Net.Mime.MediaTypeNames;
 
 public class Controller : IMessageHandler
 {
@@ -111,14 +113,15 @@ public class Controller : IMessageHandler
 	{
 		GameCanvas.debugSession.removeAllElements();
 		GameCanvas.debug("SA1", 2);
-		try
+        try
 		{
 			mSystem.LogCMD(">>>cmd= " + msg.command);
 			Char @char = null;
 			Mob mob = null;
 			MyVector myVector = new MyVector();
 			int num = 0;
-			Controller2.readMessage(msg);
+            File.AppendAllText("read.txt", $"{msg.command} | ");
+            Controller2.readMessage(msg);
 			switch (msg.command)
 			{
 			case 24:
@@ -1193,7 +1196,7 @@ public class Controller : IMessageHandler
 						int num174 = msg.reader().readInt();
 						sbyte[] data5 = new sbyte[num174];
 						msg.reader().read(ref data5, 0, num174);
-						Rms.saveRMS(filename, data5);
+                                Rms.saveRMS(filename, data5);
 					}
 					catch (Exception)
 					{
@@ -2531,11 +2534,11 @@ public class Controller : IMessageHandler
 				break;
 			case -25:
 				GameCanvas.debug("SA3", 2);
-				GameScr.info1.addInfo(msg.reader().readUTF(), 0);
+				GameScr.info1.addInfo(msg.reader().readUTF() + " Test2", 0);
 				break;
 			case 94:
 				GameCanvas.debug("SA3", 2);
-				GameScr.info1.addInfo(msg.reader().readUTF(), 0);
+				GameScr.info1.addInfo(msg.reader().readUTF() + " Test", 0);
 				break;
 			case 47:
 				GameCanvas.debug("SA4", 2);
@@ -3253,6 +3256,7 @@ public class Controller : IMessageHandler
 				GameCanvas.endDlg();
 				break;
 			case -24:
+				
 				Char.isLoadingMap = true;
 				Cout.println("GET MAP INFO");
 				GameScr.gI().magicTree = null;
@@ -4554,8 +4558,8 @@ public class Controller : IMessageHandler
 	public void loadInfoMap(Message msg)
 	{
 		try
-		{
-			if (mGraphics.zoomLevel == 1)
+        {
+            if (mGraphics.zoomLevel == 1)
 			{
 				SmallImage.clearHastable();
 			}
@@ -4946,11 +4950,12 @@ public class Controller : IMessageHandler
 
 	public void messageNotMap(Message msg)
 	{
-		GameCanvas.debug("SA6", 2);
+
+        GameCanvas.debug("SA6", 2);
 		try
 		{
 			sbyte b = msg.reader().readByte();
-			mSystem.LogCMD("---messageNotMap : " + b);
+            mSystem.LogCMD("---messageNotMap : " + b);
 			switch (b)
 			{
 			case 16:
@@ -5226,7 +5231,7 @@ public class Controller : IMessageHandler
 		try
 		{
 			sbyte b = msg.reader().readByte();
-			mSystem.LogCMD("---messageNotLogin : " + b);
+            mSystem.LogCMD("---messageNotLogin : " + b);
 			if (b != 2)
 			{
 				return;
@@ -5275,7 +5280,7 @@ public class Controller : IMessageHandler
 		{
 			GameCanvas.debug("SA12", 2);
 			sbyte b = msg.reader().readByte();
-			mSystem.LogCMD("---messageSubCommand : " + b);
+            mSystem.LogCMD("---messageSubCommand : " + b);
 			switch (b)
 			{
 			case 63:

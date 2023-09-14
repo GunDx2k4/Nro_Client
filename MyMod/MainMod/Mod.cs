@@ -95,7 +95,7 @@ namespace MyMod.MainMod
         {
             if(GameCanvas.gameTick % 20 == 0)
             {
-                Service.gI().petInfo();
+                //Service.gI().petInfo();
             }
             if (cmdTest.isPointerPressInside())
             {
@@ -118,7 +118,7 @@ namespace MyMod.MainMod
         {
             if(GameCanvas.keyAsciiPress == 'm')
             {
-                panel.show();
+               
                 return true;
             }
             return false;
@@ -130,6 +130,14 @@ namespace MyMod.MainMod
 
         public void paintGameScr(mGraphics g)
         {
+            mFont.tahoma_7b_white.drawString(g, $"name : {TileMap.zoneID}", 150, 50, 0);
+            int y = 20;
+            for (int i = 0; i < GameScr.vCharInMap.size(); i++)
+            {
+                Char c = (Char)GameScr.vCharInMap.elementAt(i);
+                mFont.tahoma_7b_white.drawString(g, $"name : {c.cName}", 100, y, 0);
+                y += 10;
+            }
             cmdTest.paint(g);
             cmdPanel.paint(g);
         }

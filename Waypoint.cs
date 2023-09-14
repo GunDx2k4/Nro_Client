@@ -69,6 +69,7 @@ public class Waypoint : IActionListener
 
 	public void perform(int idAction, object p)
 	{
+		GameScr.info1.addInfo($"idAction : {idAction}",0);
 		switch (idAction)
 		{
 		case 1:
@@ -83,6 +84,7 @@ public class Waypoint : IActionListener
 			Char.myCharz().currentMovePoint = new MovePoint(xEnd2, yEnd2);
 			Char.myCharz().cdir = ((Char.myCharz().cx - Char.myCharz().currentMovePoint.xEnd <= 0) ? 1 : (-1));
 			Service.gI().charMove();
+					
 			break;
 		}
 		case 2:

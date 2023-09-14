@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using Assets.src.g;
 
 public class Service
@@ -725,21 +726,25 @@ public class Service
 	public Message messageNotLogin(sbyte command)
 	{
 		Message message = new Message((sbyte)(-29));
-		message.writer().writeByte(command);
-		return message;
+        File.AppendAllText("send.txt", $"({command}) ");
+        //Session_ME.msg += $"({command}) ";
+        message.writer().writeByte(command); 
+        return message;
 	}
 
 	public Message messageNotMap(sbyte command)
 	{
 		Message message = new Message((sbyte)(-28));
-		message.writer().writeByte(command);
+        File.AppendAllText("send.txt", $"({command}) ");
+        message.writer().writeByte(command);
 		return message;
 	}
 
 	public static Message messageSubCommand(sbyte command)
 	{
 		Message message = new Message((sbyte)(-30));
-		message.writer().writeByte(command);
+        File.AppendAllText("send.txt", $"({command}) ");
+        message.writer().writeByte(command);
 		return message;
 	}
 
@@ -878,7 +883,7 @@ public class Service
 	public void requestChangeMap()
 	{
 		Message message = new Message((sbyte)(-23));
-		session.sendMessage(message);
+        session.sendMessage(message);
 		message.cleanup();
 	}
 
@@ -911,8 +916,8 @@ public class Service
 	}
 
 	public void checkMMove(int second)
-	{
-		Message message = new Message((sbyte)(-78));
+    {
+        Message message = new Message((sbyte)(-78));
 		try
 		{
 			message.writer().writeInt(second);
@@ -955,20 +960,20 @@ public class Service
 					GameScr.gI().isInjureMp = true;
 					GameScr.gI().twMp = 0;
 				}
-			}
+            }
 			else
 			{
 				message.writer().writeByte((sbyte)0);
-			}
+            }
 			message.writer().writeShort(Char.myCharz().cx);
 			if (num2 != 0)
 			{
 				message.writer().writeShort(Char.myCharz().cy);
 			}
 			session.sendMessage(message);
-			GameScr.tickMove++;
+            GameScr.tickMove++;
 			message.cleanup();
-		}
+        }
 		catch (Exception ex)
 		{
 			Cout.LogError("LOI CHAR MOVE " + ex.ToString());
@@ -1017,6 +1022,7 @@ public class Service
 		try
 		{
 			message = new Message((sbyte)11);
+			File.AppendAllText("send.txt", $"({modTemplateId})");
 			message.writer().writeByte(modTemplateId);
 			session.sendMessage(message);
 		}
@@ -1199,7 +1205,8 @@ public class Service
 		try
 		{
 			message = new Message((sbyte)(-66));
-			message.writer().writeShort(id);
+            File.AppendAllText("send.txt", $"({id})");
+            message.writer().writeShort(id);
 			session.sendMessage(message);
 		}
 		catch (Exception ex)
@@ -2437,7 +2444,7 @@ public class Service
 		{
 			message = new Message((sbyte)(-33));
 			session.sendMessage(message);
-		}
+        }
 		catch (Exception ex)
 		{
 			Cout.println(ex.Message + ex.StackTrace);
@@ -2509,7 +2516,8 @@ public class Service
 		try
 		{
 			message = new Message((sbyte)(-63));
-			message.writer().writeByte(ID);
+            File.AppendAllText("send.txt", $"({ID})");
+            message.writer().writeByte(ID);
 			session.sendMessage(message);
 		}
 		catch (Exception ex)
@@ -2892,10 +2900,11 @@ public class Service
 				for (int i = 0; i < vID.size(); i++)
 				{
 					Res.outz("gui len str " + ((ImageSource)vID.elementAt(i)).id);
-					message.writer().writeUTF(((ImageSource)vID.elementAt(i)).id);
+                    message.writer().writeUTF(((ImageSource)vID.elementAt(i)).id);
 				}
 			}
-			if (Session_ME2.gI().isConnected() && !Session_ME2.connecting)
+
+            if (Session_ME2.gI().isConnected() && !Session_ME2.connecting)
 			{
 				session = Session_ME2.gI();
 			}
